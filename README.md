@@ -20,6 +20,32 @@ cd tshmux
 
 ---
 
+## 🚀 Use It
+
+- Start tmux: `tmux`
+- Install plugins: inside tmux press `prefix` + `I` (default prefix is `Ctrl-b`).
+- Reload config any time: `tmux source-file ~/.tmux.conf` (or open a new session).
+
+Once plugins finish installing, your tmux will load this config (theme, keybinds, and plugins).
+
+---
+
+## ⌨️ Keybindings
+
+- Alt-n: new window in current directory
+- Alt-d: detach client
+- Alt-q: enter copy-mode (vi keys enabled)
+- Alt-s: session tree switcher
+- Alt-h/j/k/l: jump to windows 1–4; Alt-H/J/K/L: windows 5–8
+- Alt-Left/Right/Up/Down: move between panes
+- Alt--: vertical split (side-by-side)
+- Alt-_: horizontal split (stacked)
+- Alt-:: tmux command prompt
+- Alt-r: restore sessions (tmux-resurrect)
+- Alt-w: create a preconfigured "work" session (lazygit, nvim, term)
+
+---
+
 ## 📁 Structure
 
 ```
@@ -45,6 +71,16 @@ tshmux/
 
 * `tmux`
 * Git (for plugin installation)
+
+Notes:
+- This config sets zsh as the default shell. If your zsh path differs (e.g., `/bin/zsh`) or you prefer another shell, edit the two `default-shell`/`default-command` lines near the top of `tmux.conf`.
+
+---
+
+## 🔄 Update / Uninstall
+
+- Update: `git pull --recurse-submodules && git submodule update --init --recursive` then restart tmux (or `tmux source-file ~/.tmux.conf`).
+- Uninstall: remove the symlink `~/.tmux.conf` and the TPM link at `~/.tmux/plugins/tpm` if created.
 
 ---
 
