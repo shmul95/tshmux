@@ -51,6 +51,54 @@ install_pkg() {
   esac
 }
 
+ensure_tmux_yank_clipboard() {
+  local clipboard_cmds=(pbcopy wl-copy xclip xsel clip.exe win32yank.exe powershell.exe)
+  for cmd in "${clipboard_cmds[@]}"; do
+    if have "$cmd"; then
+      return 0
+    fi
+  done
+
+  if [ "$PM" = "none" ]; then
+    echo "⚠️  tmux-yank needs xclip, xsel, or wl-clipboard for system clipboard sync. Install one manually to silence the warning."
+    return 1
+  fi
+
+  echo "📋 Installing clipboard helper for tmux-yank (xclip/wl-clipboard)"
+
+  local packages_to_try=()
+  case "$PM" in
+    apt|dnf|yum|zypper|apk|pacman)
+      packages_to_try=(wl-clipboard xclip xsel)
+      ;;
+    brew)
+      packages_to_try=(wl-clipboard xclip)
+      ;;
+    port)
+      packages_to_try=(xclip)
+      ;;
+    *)
+      packages_to_try=()
+      ;;
+  esac
+
+  for pkg in "${packages_to_try[@]}"; do
+    if install_pkg "$PM" "$pkg"; then
+      if have wl-copy || have xclip || have xsel; then
+        echo "✅ Clipboard helper detected for tmux-yank"
+        return 0
+      fi
+    fi
+  done
+
+  if have wl-copy || have xclip || have xsel; then
+    return 0
+  fi
+
+  echo "⚠️  Unable to install a clipboard helper automatically. Install xclip or wl-clipboard manually so tmux-yank can integrate with your system clipboard."
+  return 1
+}
+
 PM=$(detect_pm)
 
 # ----- ensure prerequisites -----
@@ -74,6 +122,10 @@ if ! have zsh; then
   else
     echo "ℹ️  Proceeding without zsh install; your current shell will be used."
   fi
+fi
+
+if ! ensure_tmux_yank_clipboard; then
+  echo "ℹ️  tmux-yank will warn until you install xclip, xsel, or wl-clipboard manually."
 fi
 
 # Determine best shell path for tmux default-shell/command

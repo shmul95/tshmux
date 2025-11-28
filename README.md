@@ -71,6 +71,7 @@ tshmux/
 
 * `tmux`
 * Git (for plugin installation)
+* Clipboard helper for tmux-yank (`xclip`, `xsel`, or `wl-clipboard`). The installer attempts to add one automatically on Linux; install manually if you're on a platform it can't detect.
 
 Notes:
 - This config sets zsh as the default shell. If your zsh path differs (e.g., `/bin/zsh`) or you prefer another shell, edit the two `default-shell`/`default-command` lines near the top of `tmux.conf`.

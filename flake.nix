@@ -4,53 +4,76 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    tmuxPlugins = {
-      # TPM
-      tpm.url = "github:tmux-plugins/tpm";
-
-      # Core plugins
-      sensible.url = "github:tmux-plugins/tmux-sensible";
-      resurrect.url = "github:tmux-plugins/tmux-resurrect";
-      continuum.url = "github:tmux-plugins/tmux-continuum";
-      yank.url = "github:tmux-plugins/tmux-yank";
-
-      # Navigation + theme pack
-      navigator.url = "github:christoomey/vim-tmux-navigator";
-      themepack.url = "github:jimeh/tmux-themepack";
+    tmuxPluginTpm = {
+      url = "github:tmux-plugins/tpm";
+      flake = false;
+    };
+    tmuxPluginSensible = {
+      url = "github:tmux-plugins/tmux-sensible";
+      flake = false;
+    };
+    tmuxPluginResurrect = {
+      url = "github:tmux-plugins/tmux-resurrect";
+      flake = false;
+    };
+    tmuxPluginContinuum = {
+      url = "github:tmux-plugins/tmux-continuum";
+      flake = false;
+    };
+    tmuxPluginYank = {
+      url = "github:tmux-plugins/tmux-yank";
+      flake = false;
+    };
+    tmuxPluginNavigator = {
+      url = "github:christoomey/vim-tmux-navigator";
+      flake = false;
+    };
+    tmuxPluginThemepack = {
+      url = "github:jimeh/tmux-themepack";
+      flake = false;
     };
   };
 
-  outputs = { self, nixpkgs, tmuxPlugins, ... }:
+  outputs = inputs@{ self, nixpkgs, ... }:
     let
       systems = [ "x86_64-linux" "aarch64-linux" ];
       forEachSystem = nixpkgs.lib.genAttrs systems;
+      pluginSources = {
+        tpm = inputs.tmuxPluginTpm;
+        sensible = inputs.tmuxPluginSensible;
+        resurrect = inputs.tmuxPluginResurrect;
+        continuum = inputs.tmuxPluginContinuum;
+        yank = inputs.tmuxPluginYank;
+        navigator = inputs.tmuxPluginNavigator;
+        themepack = inputs.tmuxPluginThemepack;
+      };
 
-      mkPlugin = name: src: system:
+      mkPluginSet = system:
         let
           pkgs = import nixpkgs { inherit system; };
-        in pkgs.stdenvNoCC.mkDerivation {
-          pname = "tmux-plugin-${name}";
-          version = src.rev or "unknown";
-          inherit src;
-          installPhase = ''
-            mkdir -p $out
-            cp -R . $out
-          '';
-        };
+          mkPlugin = name: src:
+            pkgs.tmuxPlugins.mkTmuxPlugin {
+              pluginName = name;
+              version = src.rev or "dev";
+              inherit src;
+              postInstall = pkgs.lib.optionalString (name == "resurrect") ''
+                rm -rf $out/share/tmux-plugins/${name}/tests
+                rm -f $out/share/tmux-plugins/${name}/run_tests
+              '';
+            };
+        in nixpkgs.lib.mapAttrs mkPlugin pluginSources;
     in {
       packages = forEachSystem (system:
         let
           pkgs = import nixpkgs { inherit system; };
 
-          # Build all plugins from GitHub inputs
-          pluginSet = nixpkgs.lib.mapAttrs (name: v: mkPlugin name v system) tmuxPlugins;
+          pluginSet = mkPluginSet system;
 
-          # Build the final combined plugin tree
-          plugins = pkgs.symlinkJoin {
+          allPlugins = pkgs.symlinkJoin {
             name = "tmux-plugins";
             paths = builtins.attrValues pluginSet;
           };
-        in {
+        in rec {
           default = pkgs.stdenvNoCC.mkDerivation {
             pname = "tshmux";
             version = if self ? shortRev then self.shortRev else "dev";
@@ -60,11 +83,12 @@
             installPhase = ''
               mkdir -p $out/share/tshmux
               cp ${./tmux.conf} $out/share/tshmux/tmux.conf
-              cp -R ${plugins} $out/share/tshmux/plugins
+              ln -s ${allPlugins} $out/share/tshmux/plugins
             '';
           };
 
-          inherit plugins pluginSet;
+          plugins = allPlugins;
+          inherit pluginSet;
         });
 
       formatter = forEachSystem (system:
@@ -72,4 +96,3 @@
         in pkgs.nixpkgs-fmt);
     };
 }
-
