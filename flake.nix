@@ -28,10 +28,6 @@
       url = "github:christoomey/vim-tmux-navigator";
       flake = false;
     };
-    tmuxPluginThemepack = {
-      url = "github:jimeh/tmux-themepack";
-      flake = false;
-    };
   };
 
   outputs = inputs@{ self, nixpkgs, ... }:
@@ -45,7 +41,6 @@
         continuum = inputs.tmuxPluginContinuum;
         yank = inputs.tmuxPluginYank;
         navigator = inputs.tmuxPluginNavigator;
-        themepack = inputs.tmuxPluginThemepack;
       };
 
       mkPluginSet = system:
