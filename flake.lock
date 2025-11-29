@@ -23,7 +23,6 @@
         "tmuxPluginNavigator": "tmuxPluginNavigator",
         "tmuxPluginResurrect": "tmuxPluginResurrect",
         "tmuxPluginSensible": "tmuxPluginSensible",
-        "tmuxPluginThemepack": "tmuxPluginThemepack",
         "tmuxPluginTpm": "tmuxPluginTpm",
         "tmuxPluginYank": "tmuxPluginYank"
       }
@@ -89,22 +88,6 @@
       "original": {
         "owner": "tmux-plugins",
         "repo": "tmux-sensible",
-        "type": "github"
-      }
-    },
-    "tmuxPluginThemepack": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1577056464,
-        "narHash": "sha256-c5EGBrKcrqHWTKpCEhxYfxPeERFrbTuDfcQhsUAbic4=",
-        "owner": "jimeh",
-        "repo": "tmux-themepack",
-        "rev": "7c59902f64dcd7ea356e891274b21144d1ea5948",
-        "type": "github"
-      },
-      "original": {
-        "owner": "jimeh",
-        "repo": "tmux-themepack",
         "type": "github"
       }
     },
