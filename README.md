@@ -1,6 +1,6 @@
 # tshmux
 
-🔧 **tshmux** is my personal Tmux configuration, designed for speed, clarity, and portability. It includes plugin management, status bar customization, and clean defaults.
+**tshmux** is my personal Tmux configuration, designed for speed, clarity, and portability. It includes plugin management, status bar customization, and clean defaults.
 
 This setup features:
 
@@ -14,7 +14,7 @@ This setup features:
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### Option 1: Nix Flake (Recommended)
 
@@ -71,7 +71,7 @@ Then in your configuration:
 
 ---
 
-## 🚀 Use It
+## Use It
 
 ### With Nix Flake
 - Direct use: `tshmux` (runs tmux with embedded config)
@@ -86,7 +86,7 @@ Once plugins finish installing, your tmux will load this config (theme, keybinds
 
 ---
 
-## 📦 Available Packages
+## Available Packages
 
 When using the Nix flake, several packages are available:
 
@@ -107,7 +107,7 @@ nix profile add github:shmul95/tshmux#tmux-configured
 nix profile add github:shmul95/tshmux#config
 ```
 
-## ⚡ Plugins Included
+## Plugins Included
 
 tshmux comes with a curated set of tmux plugins, automatically managed through Nix:
 
@@ -124,7 +124,7 @@ tshmux comes with a curated set of tmux plugins, automatically managed through N
 
 ---
 
-## ⌨️ Keybindings
+## Keybindings
 
 ### Window Management
 | Key | Action | Description |
@@ -195,7 +195,7 @@ tshmux comes with a curated set of tmux plugins, automatically managed through N
 
 ---
 
-## 📁 Structure
+## Structure
 
 ```
 tshmux/
@@ -207,7 +207,7 @@ tshmux/
 
 ---
 
-## 🔧 What It Does
+## What It Does
 
 * Symlinks `tmux.conf` to `~/.tmux.conf`
 * Links TPM to `~/.tmux/plugins/tpm`
@@ -216,7 +216,7 @@ tshmux/
 
 ---
 
-## ✅ Requirements
+## Requirements
 
 * `tmux`
 * Git (for plugin installation)
@@ -227,13 +227,13 @@ Notes:
 
 ---
 
-## 🔄 Update / Uninstall
+## Update / Uninstall
 
 - Update: `git pull --recurse-submodules && git submodule update --init --recursive` then restart tmux (or `tmux source-file ~/.tmux.conf`).
 - Uninstall: remove the symlink `~/.tmux.conf` and the TPM link at `~/.tmux/plugins/tpm` if created.
 
 ---
 
-## 💬 License
+## License
 
 MIT — feel free to use, fork, and adapt.
