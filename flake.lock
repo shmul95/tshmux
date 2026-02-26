@@ -21,7 +21,6 @@
         "nixpkgs": "nixpkgs",
         "tmuxPluginContinuum": "tmuxPluginContinuum",
         "tmuxPluginNavigator": "tmuxPluginNavigator",
-        "tmuxPluginResurrect": "tmuxPluginResurrect",
         "tmuxPluginSensible": "tmuxPluginSensible",
         "tmuxPluginTpm": "tmuxPluginTpm",
         "tmuxPluginYank": "tmuxPluginYank"
@@ -56,22 +55,6 @@
       "original": {
         "owner": "christoomey",
         "repo": "vim-tmux-navigator",
-        "type": "github"
-      }
-    },
-    "tmuxPluginResurrect": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1678098022,
-        "narHash": "sha256-FcSjYyWjXM1B+WmiK2bqUNJYtH7sJBUsY2IjSur5TjY=",
-        "owner": "tmux-plugins",
-        "repo": "tmux-resurrect",
-        "rev": "cff343cf9e81983d3da0c8562b01616f12e8d548",
-        "type": "github"
-      },
-      "original": {
-        "owner": "tmux-plugins",
-        "repo": "tmux-resurrect",
         "type": "github"
       }
     },
