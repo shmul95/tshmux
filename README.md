@@ -27,17 +27,6 @@ nix profile add github:shmul95/tshmux
 tshmux
 ```
 
-Or set up the configuration files locally:
-
-```bash
-# Install and setup configuration files
-nix profile add github:shmul95/tshmux
-tshmux-setup
-
-# Then use regular tmux
-tmux
-```
-
 ### Home Manager
 
 Add to your flake inputs:
@@ -68,7 +57,6 @@ This automatically configures tmux with all tshmux settings and plugins.
 
 ### With Nix Profile
 - **Direct use**: `tshmux` (runs tmux with embedded config)
-- **After setup**: Run `tshmux-setup` once, then use `tmux` normally
 
 ### With Home Manager
 - Just use `tmux` - everything is configured automatically
@@ -76,27 +64,6 @@ This automatically configures tmux with all tshmux settings and plugins.
 **No plugin installation needed!** All plugins are built and loaded automatically through Nix.
 
 ---
-
-## Available Packages
-
-When using the Nix flake, several packages are available:
-
-* `default` / `tshmux`: Complete setup with `tshmux` and `tshmux-setup` commands  
-* `tmux-configured`: Tmux with embedded configuration (no separate setup needed)
-* `config`: Just the configuration files and plugins (for manual setup)
-* `plugins`: All tmux plugins as nix packages
-
-Examples:
-```bash
-# Install the complete package (default)
-nix profile add github:shmul95/tshmux
-
-# Install just the configured tmux binary
-nix profile add github:shmul95/tshmux#tmux-configured
-
-# Install just the config files
-nix profile add github:shmul95/tshmux#config
-```
 
 ## Plugins Included
 
@@ -188,7 +155,6 @@ tshmux comes with a curated set of tmux plugins, automatically managed through N
 tshmux/
 ├── flake.nix              → Nix flake with plugin definitions
 ├── tmux.conf              → Main tmux configuration template
-├── tshmux.nix             → Legacy Home Manager module  
 └── README.md              → This documentation
 ```
 
