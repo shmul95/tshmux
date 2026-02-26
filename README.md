@@ -8,7 +8,6 @@ This setup features:
 * **Alt-key workflow** - Comprehensive Alt+key bindings for fast navigation  
 * **Vi-style copy mode** - Familiar vim keybindings for text selection and copying
 * **Smart clipboard integration** - Automatic detection of system clipboard (Wayland/X11/macOS)
-* **Session persistence** - Automatic session save/restore with tmux-resurrect + continuum
 * **Clean status bar** - Minimalist yellow-on-black theme with session info
 * **Developer shortcuts** - Quick setup commands for common development workflows
 
@@ -107,7 +106,6 @@ tshmux comes with a curated set of tmux plugins, automatically managed through N
 |--------|---------|------------|
 | **TPM** | Tmux Plugin Manager | [tmux-plugins/tpm](https://github.com/tmux-plugins/tpm) |
 | **tmux-sensible** | Sensible tmux defaults | [tmux-plugins/tmux-sensible](https://github.com/tmux-plugins/tmux-sensible) |
-| **tmux-resurrect** | Save/restore tmux sessions | [tmux-plugins/tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect) |
 | **tmux-continuum** | Automatic session save/restore | [tmux-plugins/tmux-continuum](https://github.com/tmux-plugins/tmux-continuum) |
 | **tmux-yank** | Copy to system clipboard | [tmux-plugins/tmux-yank](https://github.com/tmux-plugins/tmux-yank) |
 | **vim-tmux-navigator** | Seamless vim-tmux navigation | [christoomey/vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) |
@@ -151,7 +149,6 @@ tshmux comes with a curated set of tmux plugins, automatically managed through N
 | Key | Action | Description |
 |-----|--------|-------------|
 | `Alt+s` | Session switcher | Open session tree chooser |
-| `Alt+r` | Restore session | Restore sessions via tmux-resurrect |
 
 ### Copy Mode & Clipboard
 | Key | Action | Description |
@@ -170,11 +167,9 @@ tshmux comes with a curated set of tmux plugins, automatically managed through N
 
 ### Plugin Features
 
-#### tmux-resurrect & tmux-continuum
+#### tmux-continuum
 - **Auto-save**: Sessions automatically saved every 15 minutes
 - **Auto-restore**: Sessions restored on tmux start
-- **Manual restore**: `Alt+r` to manually restore sessions
-- **Captures**: Pane contents, working directories, and running programs
 
 #### vim-tmux-navigator  
 - Seamlessly navigate between vim splits and tmux panes with `Ctrl+h/j/k/l`
