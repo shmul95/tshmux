@@ -16,19 +16,19 @@ This setup features:
 
 ## Installation
 
-### Option 1: Nix Flake (Recommended)
+### Nix Profile (Recommended)
 
-For Nix users, the easiest way to install tshmux:
+The easiest way to install tshmux:
 
 ```bash
-# Install tshmux directly (includes tmux with embedded config)
+# Install tshmux directly 
 nix profile add github:shmul95/tshmux
 
 # Run tmux with your configuration
 tshmux
 ```
 
-Or if you want to set up the configuration files locally:
+Or set up the configuration files locally:
 
 ```bash
 # Install and setup configuration files
@@ -39,17 +39,9 @@ tshmux-setup
 tmux
 ```
 
-### Option 2: Traditional Git Install
+### Home Manager
 
-```bash
-git clone --recurse-submodules https://github.com/shmul95/tshmux.git
-cd tshmux
-./install.sh
-```
-
-### Option 3: Home Manager
-
-Add to your `home.nix`:
+Add to your flake inputs:
 
 ```nix
 {
@@ -59,30 +51,30 @@ Add to your `home.nix`:
 }
 ```
 
-Then in your configuration:
+Then in your home-manager configuration:
 
 ```nix
 { inputs, ... }: {
-  imports = [ (inputs.tshmux + "/tshmux.nix") inputs ];
+  imports = [ inputs.tshmux.homeManagerModules.default ];
   
-  shmul.tshmux.enable = true;
+  programs.tshmux.enable = true;
 }
 ```
 
+This automatically configures tmux with all tshmux settings and plugins.
+
 ---
 
-## Use It
+## Usage
 
-### With Nix Flake
-- Direct use: `tshmux` (runs tmux with embedded config)
-- After `tshmux-setup`: `tmux` (uses standard tmux with installed config)
+### With Nix Profile
+- **Direct use**: `tshmux` (runs tmux with embedded config)
+- **After setup**: Run `tshmux-setup` once, then use `tmux` normally
 
-### Traditional Install
-- Start tmux: `tmux`
-- Install plugins: inside tmux press `prefix` + `I` (default prefix is `Ctrl-b`).
-- Reload config any time: `tmux source-file ~/.tmux.conf` (or open a new session).
+### With Home Manager
+- Just use `tmux` - everything is configured automatically
 
-Once plugins finish installing, your tmux will load this config (theme, keybinds, and plugins).
+**No plugin installation needed!** All plugins are built and loaded automatically through Nix.
 
 ---
 
@@ -195,42 +187,55 @@ tshmux comes with a curated set of tmux plugins, automatically managed through N
 
 ---
 
-## Structure
+## Repository Structure
 
 ```
 tshmux/
-├── tmux.conf              → Main Tmux config
-├── install.sh             → Symlinks and setup
-└── plugins/
-    └── tpm/               → Tmux Plugin Manager (TPM)
+├── flake.nix              → Nix flake with plugin definitions
+├── tmux.conf              → Main tmux configuration template
+├── tshmux.nix             → Legacy Home Manager module  
+└── README.md              → This documentation
 ```
 
 ---
 
-## What It Does
+## What tshmux provides
 
-* Symlinks `tmux.conf` to `~/.tmux.conf`
-* Links TPM to `~/.tmux/plugins/tpm`
-* Initializes plugin submodules
-* Prompts you to install plugins with `<prefix> + I` inside Tmux
+* **Zero-setup tmux experience** - All plugins and configs managed through Nix
+* **Cross-platform clipboard support** - Automatically works on Linux (Wayland/X11) and macOS
+* **Reproducible environments** - Same configuration across all your machines
+* **No manual plugin management** - Everything built and loaded automatically
 
 ---
 
 ## Requirements
 
-* `tmux`
-* Git (for plugin installation)
-* Clipboard helper for tmux-yank (`xclip`, `xsel`, or `wl-clipboard`). The installer attempts to add one automatically on Linux; install manually if you're on a platform it can't detect.
+* **Nix** with flakes enabled
+* **tmux** (automatically provided by Nix)
+* **System clipboard tools** (automatically detected: wl-copy, xclip, or pbcopy)
 
-Notes:
-- This config sets zsh as the default shell. If your zsh path differs (e.g., `/bin/zsh`) or you prefer another shell, edit the two `default-shell`/`default-command` lines near the top of `tmux.conf`.
+The configuration automatically sets zsh as the default shell through Nix paths.
 
 ---
 
-## Update / Uninstall
+## Updates & Management
 
-- Update: `git pull --recurse-submodules && git submodule update --init --recursive` then restart tmux (or `tmux source-file ~/.tmux.conf`).
-- Uninstall: remove the symlink `~/.tmux.conf` and the TPM link at `~/.tmux/plugins/tpm` if created.
+### Updating
+```bash
+# Update to latest version
+nix profile upgrade github:shmul95/tshmux
+
+# Or for Home Manager users - just rebuild your configuration
+home-manager switch
+```
+
+### Uninstalling
+```bash
+# Remove from Nix profile
+nix profile remove tshmux
+
+# Or for Home Manager - remove from your configuration and rebuild
+```
 
 ---
 
