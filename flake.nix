@@ -69,7 +69,6 @@
 
           # tmux.conf as a var in nix
           tmuxConf = pkgs.replaceVars ./tmux.conf {
-            zsh = pkgs.zsh; # later on use zshmul
             pluginPath = allPlugins;
             inherit pluginLoader clipboardCmd;
           };
