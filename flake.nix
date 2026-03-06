@@ -60,20 +60,30 @@
             (p: "run-shell ${p}/share/tmux-plugins/${p.pluginName}/${p.pluginName}.tmux")
             (builtins.attrValues pluginSet);
 
-          # clipboard command 
-          clipboardCmd = if pkgs.stdenv.isLinux
-            then (if pkgs.wayland != null
-              then "wl-copy"
-              else "xclip -section clipboard")
-            else "pbcopy";
+          # clipboard command - detect at runtime for proper system integration
+          clipboardScript = pkgs.writeShellScript "clipboard-copy" ''
+            if [ -n "$WAYLAND_DISPLAY" ] && command -v wl-copy >/dev/null 2>&1; then
+              wl-copy
+            elif [ -n "$DISPLAY" ] && command -v xclip >/dev/null 2>&1; then
+              xclip -selection clipboard
+            elif command -v wl-copy >/dev/null 2>&1; then
+              wl-copy  
+            elif command -v xclip >/dev/null 2>&1; then
+              xclip -selection clipboard
+            else
+              cat > /dev/null
+            fi
+          '';
 
           # tmux.conf as a var in nix
           tmuxConf = pkgs.replaceVars ./tmux.conf {
             pluginPath = allPlugins;
-            inherit pluginLoader clipboardCmd;
+            inherit pluginLoader;
+            clipboardCmd = clipboardScript;
           };
 
           tshmux = pkgs.writeShellScriptBin "tshmux" ''
+            export PATH=${pkgs.lib.makeBinPath [ pkgs.wl-clipboard pkgs.xclip ]}:$PATH
             exec ${pkgs.tmux}/bin/tmux -f ${tmuxConf} "$@"
           '';
         in {
