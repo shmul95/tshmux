@@ -115,7 +115,8 @@ tshmux comes with a curated set of tmux plugins, automatically managed through N
 ### Session Management
 | Key | Action | Description |
 |-----|--------|-------------|
-| `Alt+s` | Session switcher | Open session tree chooser |
+| `Alt+s` | Session switcher | Open session tree chooser (press `x` inside to kill a session) |
+| `Alt+Shift+X` | Kill session | Delete the current session (with confirmation prompt) |
 
 ### Copy Mode & Clipboard
 | Key | Action | Description |
