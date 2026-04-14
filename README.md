@@ -176,7 +176,27 @@ tshmux/
 * **tmux** (automatically provided by Nix)
 * **System clipboard tools** (automatically detected: wl-copy, xclip, or pbcopy)
 
-The configuration automatically sets zsh as the default shell through Nix paths.
+The configuration respects your system's configured shell via `$SHELL`, launching each pane as an interactive login shell.
+
+---
+
+## NVM and Shell Version Manager Compatibility
+
+tshmux starts each tmux pane as an **interactive login shell** (`$SHELL -l`). This ensures both your login profile (`~/.zprofile` or `~/.bash_profile`) and your interactive RC file (`~/.zshrc` or `~/.bashrc`) are sourced, so tools like NVM, rbenv, pyenv, and similar version managers initialize correctly.
+
+### Why this matters
+
+NVM and similar tools initialize themselves by adding a shell function (e.g., `nvm`) to the shell session. These functions are typically defined in `~/.zshrc` or `~/.bashrc`. A pure login shell sources `.zprofile`/`.bash_profile` but not `.zshrc` on many systems, so the `nvm` function is never defined.
+
+### If NVM is still not found
+
+1. **Verify NVM init is in your RC file**: Confirm that `~/.zshrc` (or `~/.bashrc`) contains:
+   ```sh
+   export NVM_DIR="$HOME/.nvm"
+   [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+   ```
+2. **Or move NVM init to your login profile**: Place the above lines in `~/.zprofile` (zsh) or `~/.bash_profile` (bash) instead.
+3. **Restart your tshmux session** after any profile changes — existing panes will not pick up changes until a new shell is started.
 
 ---
 
