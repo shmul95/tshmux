@@ -93,5 +93,15 @@
         });
 
       formatter = forEachSystem (system: (import nixpkgs { inherit system; }).nixpkgs-fmt);
+
+      homeManagerModules.default = import ./home-manager.nix {
+        inherit
+          (inputs)
+          tmuxPluginTpm
+          tmuxPluginSensible
+          tmuxPluginContinuum
+          tmuxPluginYank
+          tmuxPluginNavigator;
+      };
     };
 }
