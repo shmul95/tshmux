@@ -80,6 +80,7 @@
             pluginPath = allPlugins;
             inherit pluginLoader;
             clipboardCmd = clipboardScript;
+            zshBin = "${pkgs.zsh}/bin/zsh";
           };
 
           tshmux = pkgs.writeShellScriptBin "tshmux" ''
