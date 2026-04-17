@@ -49,6 +49,7 @@ let
     pluginPath = allPlugins;
     inherit pluginLoader;
     clipboardCmd = clipboardScript;
+    zshBin = "${pkgs.zsh}/bin/zsh";
   };
 
   generatedTmuxConf = pkgs.writeText "tmux.conf" (
