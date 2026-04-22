@@ -83,10 +83,18 @@
             zshBin = "${pkgs.zsh}/bin/zsh";
           };
 
-          tshmux = pkgs.writeShellScriptBin "tshmux" ''
+          tshmuxScript = pkgs.writeShellScriptBin "tshmux" ''
             export PATH=${pkgs.lib.makeBinPath [ pkgs.wl-clipboard pkgs.xclip ]}:$PATH
             exec ${pkgs.tmux}/bin/tmux -f ${tmuxConf} "$@"
           '';
+
+          tshmux = pkgs.symlinkJoin {
+            name = "tshmux";
+            paths = [ tshmuxScript ];
+            postBuild = ''
+              ln -s $out/bin/tshmux $out/bin/tmux
+            '';
+          };
         in {
           default = tshmux;
           inherit tshmux allPlugins;
