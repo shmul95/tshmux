@@ -1,206 +1,153 @@
+<div align="center">
+
 # tshmux
 
-**tshmux** is my personal Tmux configuration, designed for speed, clarity, and portability. It includes plugin management, status bar customization, and clean defaults.
+**An opinionated, Nix-native tmux distribution.**
+*Zero plugin bootstrap. Alt-key navigation. Ready in one command.*
 
-This setup features:
+[![Nix Flake](https://img.shields.io/badge/Nix-Flake-5277C3?logo=nixos&logoColor=white)](https://nixos.wiki/wiki/Flakes)
+[![tmux](https://img.shields.io/badge/tmux-managed-1BB91F?logo=tmux&logoColor=white)](https://github.com/tmux/tmux)
+[![Home Manager](https://img.shields.io/badge/Home%20Manager-supported-7EB26D)](https://github.com/nix-community/home-manager)
+[![Built with Nix](https://img.shields.io/badge/Built%20with-Nix-5277C3?logo=nixos&logoColor=white)](https://nixos.org)
 
-* **Nix-native plugin management** - All plugins built and managed through Nix flakes
-* **Alt-key workflow** - Comprehensive Alt+key bindings for fast navigation  
-* **Vi-style copy mode** - Familiar vim keybindings for text selection and copying
-* **Smart clipboard integration** - Automatic detection of system clipboard (Wayland/X11/macOS)
-* **Clean status bar** - Minimalist yellow-on-black theme with session info
-* **Developer shortcuts** - Quick setup commands for common development workflows
+[Quick Start](#quick-start) · [Highlights](#highlights) · [Keybindings](#keybindings-reference) · [Plugins](#plugins-included)
+
+</div>
 
 ---
 
-## Installation
+A typical tmux setup means installing TPM, copying a `.tmux.conf`, restarting tmux, hitting `prefix + I` to fetch plugins, and praying the clipboard works. `tshmux` skips all of that. Plugins are built by Nix at flake-eval time, the config is embedded, and the binary is one `nix profile` install away. The same flake works as a standalone command or a Home Manager module.
 
-### Nix Profile (Recommended)
+## Highlights
 
-The easiest way to install tshmux:
+- **Nix-built plugins** — TPM, sensible, continuum, yank, vim-tmux-navigator are all built declaratively. No `prefix + I`, no plugin directory drift across machines.
+- **Alt-key workflow** — windows, panes, splits, copy mode, and session switching all live on `Alt+<key>`. The leader stays free for muscle memory.
+- **Vi-style copy mode** — `v` / `V` / `y` for select / line-select / yank, with automatic detection of `wl-copy`, `xclip`, or `pbcopy`.
+- **Two install modes** — `nix profile` for an isolated `tshmux` command, or a Home Manager module that takes over `programs.tmux` directly.
+- **Auto-save sessions** — tmux-continuum keeps your layout safe every 15 minutes; restored on next start.
+
+## Architecture
+
+```
+tshmux/
+├── flake.nix          # plugin set, packages, home-manager module
+├── home-manager.nix   # programs.tshmux module exposed via the flake
+├── tmux.conf          # the embedded config (keybinds, theme, plugin list)
+└── flake.lock
+```
+
+Two outputs to choose from:
+
+- `packages.<system>.default` — the standalone `tshmux` binary that launches tmux with the embedded config.
+- `homeManagerModules.default` — a `programs.tshmux.enable` toggle that wires everything into your Home Manager setup.
+
+## Quick Start
+
+**Standalone (fastest path):**
 
 ```bash
-# Install tshmux directly 
 nix profile add github:shmul95/tshmux
-
-# Run tmux with your configuration
 tshmux
 ```
 
-### Home Manager
-
-Add to your flake inputs:
+**Home Manager:**
 
 ```nix
 {
-  inputs = {
-    tshmux.url = "github:shmul95/tshmux";
-  };
+  inputs.tshmux.url = "github:shmul95/tshmux";
 }
 ```
-
-Then in your home-manager configuration:
 
 ```nix
 { inputs, ... }: {
   imports = [ inputs.tshmux.homeManagerModules.default ];
-  
   programs.tshmux.enable = true;
 }
 ```
 
-This automatically configures tmux with all tshmux settings and plugins.
-
----
-
-## Usage
-
-### With Nix Profile
-- **Direct use**: `tshmux` (runs tmux with embedded config)
-
-### With Home Manager
-- Just use `tmux` - everything is configured automatically
-
-**No plugin installation needed!** All plugins are built and loaded automatically through Nix.
-
----
+After `home-manager switch`, plain `tmux` picks up the full configuration — no extra flags, no plugin install step.
 
 ## Plugins Included
 
-tshmux comes with a curated set of tmux plugins, automatically managed through Nix:
+All built by Nix and loaded automatically — no manual install, no TPM bootstrap.
 
 | Plugin | Purpose | Repository |
 |--------|---------|------------|
-| **TPM** | Tmux Plugin Manager | [tmux-plugins/tpm](https://github.com/tmux-plugins/tpm) |
-| **tmux-sensible** | Sensible tmux defaults | [tmux-plugins/tmux-sensible](https://github.com/tmux-plugins/tmux-sensible) |
-| **tmux-continuum** | Automatic session save/restore | [tmux-plugins/tmux-continuum](https://github.com/tmux-plugins/tmux-continuum) |
-| **tmux-yank** | Copy to system clipboard | [tmux-plugins/tmux-yank](https://github.com/tmux-plugins/tmux-yank) |
-| **vim-tmux-navigator** | Seamless vim-tmux navigation | [christoomey/vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) |
-
-*Note: With the Nix flake approach, plugins are automatically built and loaded—no manual plugin installation required.*
-
----
-
-## Keybindings
-
-### Window Management
-| Key | Action | Description |
-|-----|--------|-------------|
-| `Alt+n` | New window | Create new window in current directory |
-| `Alt+Shift+N` | New session | Prompt for new session name, create in current directory |
-| `Alt+d` | Detach | Detach from current tmux session |
-
-### Window Navigation  
-| Key | Action | Description |
-|-----|--------|-------------|
-| `Alt+h` | Window 0 | Jump to window 0 |
-| `Alt+j` | Window 1 | Jump to window 1 |
-| `Alt+k` | Window 2 | Jump to window 2 |
-| `Alt+l` | Window 3 | Jump to window 3 |
-| `Alt+Shift+H` | Window 4 | Jump to window 4 |
-| `Alt+Shift+J` | Window 5 | Jump to window 5 |
-| `Alt+Shift+K` | Window 6 | Jump to window 6 |
-| `Alt+Shift+L` | Window 7 | Jump to window 7 |
-
-### Pane Management
-| Key | Action | Description |
-|-----|--------|-------------|
-| `Alt+-` | Vertical split | Split pane vertically (side-by-side) |
-| `Alt+_` | Horizontal split | Split pane horizontally (stacked) |
-| `Alt+←` | Move left | Move to left pane |
-| `Alt+→` | Move right | Move to right pane |  
-| `Alt+↑` | Move up | Move to upper pane |
-| `Alt+↓` | Move down | Move to lower pane |
-
-### Session Management
-| Key | Action | Description |
-|-----|--------|-------------|
-| `Alt+s` | Session switcher | Open session tree chooser (press `x` inside to kill a session) |
-| `Alt+Shift+X` | Kill session | Delete the current session (with confirmation prompt) |
-
-### Copy Mode & Clipboard
-| Key | Action | Description |
-|-----|--------|-------------|
-| `Alt+q` | Enter copy mode | Enter vi-style copy mode |
-| `v` (in copy mode) | Begin selection | Start visual selection |
-| `V` (in copy mode) | Line selection | Select entire line |
-| `y` (in copy mode) | Yank to clipboard | Copy selection to system clipboard and exit |
-| `Escape` / `Alt+q` (in copy mode) | Exit copy mode | Cancel copy mode |
-
-### Quick Setup
-| Key | Action | Description |
-|-----|--------|-------------|
-| `Alt+w` | Work session | Run `copilot`, open nvim window, and create terminal window |
-| `Alt+:` | Command prompt | Open tmux command prompt |
-
-### Plugin Features
-
-#### tmux-continuum
-- **Auto-save**: Sessions automatically saved every 15 minutes
-- **Auto-restore**: Sessions restored on tmux start
-
-#### vim-tmux-navigator  
-- Seamlessly navigate between vim splits and tmux panes with `Ctrl+h/j/k/l`
-- Works automatically when vim-tmux-navigator is installed in vim/neovim
-
-#### tmux-yank
-- **Smart clipboard**: Automatically detects system clipboard (wl-copy, xclip, or pbcopy)
-- **Copy integration**: `y` in copy mode copies to system clipboard
-- **Mouse support**: Click and drag selection automatically copies
-
----
-
-## Repository Structure
-
-```
-tshmux/
-├── flake.nix              → Nix flake with plugin definitions
-├── tmux.conf              → Main tmux configuration template
-└── README.md              → This documentation
-```
-
----
-
-## What tshmux provides
-
-* **Zero-setup tmux experience** - All plugins and configs managed through Nix
-* **Cross-platform clipboard support** - Automatically works on Linux (Wayland/X11) and macOS
-* **Reproducible environments** - Same configuration across all your machines
-* **No manual plugin management** - Everything built and loaded automatically
-
----
+| **TPM** | Plugin runtime | [tmux-plugins/tpm](https://github.com/tmux-plugins/tpm) |
+| **tmux-sensible** | Sensible defaults | [tmux-plugins/tmux-sensible](https://github.com/tmux-plugins/tmux-sensible) |
+| **tmux-continuum** | Auto-save / auto-restore sessions | [tmux-plugins/tmux-continuum](https://github.com/tmux-plugins/tmux-continuum) |
+| **tmux-yank** | System clipboard integration | [tmux-plugins/tmux-yank](https://github.com/tmux-plugins/tmux-yank) |
+| **vim-tmux-navigator** | Seamless vim ↔ tmux pane motion | [christoomey/vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator) |
 
 ## Requirements
 
-* **Nix** with flakes enabled
-* **tmux** (automatically provided by Nix)
-* **System clipboard tools** (automatically detected: wl-copy, xclip, or pbcopy)
+- Nix with flakes enabled
+- A clipboard tool on `PATH` for yanking (`wl-copy`, `xclip`, or `pbcopy` — auto-detected)
 
-The configuration automatically sets zsh as the default shell through Nix paths.
+tmux itself is provided by the flake.
+
+## Updating
+
+```bash
+nix profile upgrade github:shmul95/tshmux       # standalone
+home-manager switch                              # Home Manager users
+```
+
+## Keybindings Reference
+
+### Window management
+
+| Key | Action |
+|-----|--------|
+| `Alt+n` | New window in current directory |
+| `Alt+Shift+N` | New session (prompts for name) |
+| `Alt+d` | Detach session |
+
+### Window navigation
+
+| Key | Window |
+|-----|--------|
+| `Alt+h` / `j` / `k` / `l` | Jump to window 0 / 1 / 2 / 3 |
+| `Alt+Shift+H` / `J` / `K` / `L` | Jump to window 4 / 5 / 6 / 7 |
+
+### Pane management
+
+| Key | Action |
+|-----|--------|
+| `Alt+-` | Split vertical (side-by-side) |
+| `Alt+_` | Split horizontal (stacked) |
+| `Alt+←` / `→` / `↑` / `↓` | Move between panes |
+| `Ctrl+h` / `j` / `k` / `l` | Vim-aware pane motion (via vim-tmux-navigator) |
+
+### Session management
+
+| Key | Action |
+|-----|--------|
+| `Alt+s` | Session tree (press `x` inside to kill a session) |
+| `Alt+Shift+X` | Kill current session (with confirmation) |
+
+### Copy mode & clipboard
+
+| Key | Action |
+|-----|--------|
+| `Alt+q` | Enter copy mode |
+| `v` / `V` (in copy mode) | Begin selection / line selection |
+| `y` (in copy mode) | Yank to system clipboard and exit |
+| `Escape` or `Alt+q` | Exit copy mode |
+
+### Quick setup
+
+| Key | Action |
+|-----|--------|
+| `Alt+w` | Work session: run `copilot`, open nvim, spawn a terminal window |
+| `Alt+:` | tmux command prompt |
 
 ---
 
-## Updates & Management
+<div align="center">
 
-### Updating
-```bash
-# Update to latest version
-nix profile upgrade github:shmul95/tshmux
+Built with Nix · Crafted by <a href="https://github.com/shmul95">@shmul95</a>
 
-# Or for Home Manager users - just rebuild your configuration
-home-manager switch
-```
+Part of the <a href="https://github.com/shmul95/zshmul">zshmul</a> · <strong>tshmux</strong> · <a href="https://github.com/shmul95/shmulvim">shmulvim</a> · <a href="https://github.com/shmul95/cabanashmul">cabanashmul</a> family
 
-### Uninstalling
-```bash
-# Remove from Nix profile
-nix profile remove tshmux
-
-# Or for Home Manager - remove from your configuration and rebuild
-```
-
----
-
-## License
-
-MIT — feel free to use, fork, and adapt.
+</div>
